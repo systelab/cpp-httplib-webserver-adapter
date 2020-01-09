@@ -1,8 +1,5 @@
 enable_testing()
 
-# Configure preprocessor definitions
-add_compile_options(-DBOOST_ALL_DYN_LINK -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
-
 # Add project folder into includes
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
