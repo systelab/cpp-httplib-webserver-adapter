@@ -60,6 +60,7 @@ install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90; fi
   - if [[ $TRAVIS_OS_NAME == linux && $BUILD_TYPE == Coverage ]]; then sudo apt-get install lcov; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then pip install conan --user; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew unlink python@2; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install conan; fi
   - conan user
   - conan remote add systelab-bintray https://api.bintray.com/conan/systelab/conan
