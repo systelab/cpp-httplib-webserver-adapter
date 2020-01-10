@@ -17,7 +17,7 @@ find_package(HttpLibWebServerAdapter)
 # Configure test package project
 set(HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT HttpLibWebServerAdapterPackageTest)
 add_executable(${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT} HttpLibWebServerAdapterExample.cpp)
-target_link_libraries(${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT} HttpLibWebServerAdapter::HttpLibWebServerAdapter ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
+target_link_libraries(${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT} HttpLibWebServerAdapter::HttpLibWebServerAdapter Threads::Threads)
 
 # Register tests
 enable_testing()
