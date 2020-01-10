@@ -7,12 +7,22 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(WebServerAdapterTestUtilities)
 find_package(gtest)
 
+# Configure preprocessor definitions
+add_compile_options(-D_SCL_SECURE_NO_WARNINGS)
+add_compile_options(-DCPPHTTPLIB_OPENSSL_SUPPORT)
+add_compile_options(-DCPPHTTPLIB_ZLIB_SUPPORT)
+
 # Configure test project
 set(HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT HttpLibWebServerAdapterTest)
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_SRC "*.cpp")
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_HDR "*.h")
 add_executable(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_HDR})
 target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} HttpLibWebServerAdapter WebServerAdapterTestUtilities::WebServerAdapterTestUtilities gtest::gtest)
+
+# Ignored missing PDBs link warning on Visual Studio
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	set_target_properties(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} PROPERTIES LINK_FLAGS "/ignore:4099")
+endif()
 
 #Configure source groups
 foreach(FILE ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_HDR}) 
