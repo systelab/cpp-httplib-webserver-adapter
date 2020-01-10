@@ -4,10 +4,15 @@ cmake_minimum_required(VERSION 3.2)
 find_package(OpenSSL)
 find_package(WebServerAdapterInterface)
 
+# Configure preprocessor definitions
+add_compile_options(-D_SCL_SECURE_NO_WARNINGS)
+add_compile_options(-DCPPHTTPLIB_OPENSSL_SUPPORT)
+add_compile_options(-DCPPHTTPLIB_ZLIB_SUPPORT)
+
 # Add project folder into includes
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Configure BoostAsioWebServerAdapter static library
+# Configure HttpLibWebServerAdapter static library
 set(HTTP_LIB_WEB_SERVER_ADAPTER HttpLibWebServerAdapter)
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_SRC "*.cpp")
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_HDR "*.h")
