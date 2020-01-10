@@ -1502,7 +1502,7 @@ inline std::string get_remote_addr(socket_t sock) {
     std::array<char, NI_MAXHOST> ipstr{};
 
     if (!getnameinfo(reinterpret_cast<struct sockaddr *>(&addr), len,
-                     ipstr.data(), (DWORD) ipstr.size(), nullptr, 0, NI_NUMERICHOST)) {
+                     ipstr.data(), (unsigned int) ipstr.size(), nullptr, 0, NI_NUMERICHOST)) {
       return ipstr.data();
     }
   }
