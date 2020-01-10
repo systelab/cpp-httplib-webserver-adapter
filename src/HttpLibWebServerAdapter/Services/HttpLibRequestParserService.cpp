@@ -19,9 +19,9 @@ namespace systelab { namespace web_server { namespace httplib {
 		request->setURI(httpLibRequest.path);
 		request->setContent(httpLibRequest.body);
 
-		for (auto& it = httpLibRequest.headers.begin(); it != httpLibRequest.headers.end(); ++it)
+		for (const auto& header : httpLibRequest.headers)
 		{
-			request->getHeaders().addHeader(it->first, it->second);
+			request->getHeaders().addHeader(header.first, header.second);
 		}
 
 		return request;
