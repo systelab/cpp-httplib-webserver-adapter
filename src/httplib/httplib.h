@@ -1502,7 +1502,7 @@ inline std::string get_remote_addr(socket_t sock) {
     std::array<char, NI_MAXHOST> ipstr{};
 
     if (!getnameinfo(reinterpret_cast<struct sockaddr *>(&addr), len,
-                     ipstr.data(), ipstr.size(), nullptr, 0, NI_NUMERICHOST)) {
+                     ipstr.data(), (DWORD) ipstr.size(), nullptr, 0, NI_NUMERICHOST)) {
       return ipstr.data();
     }
   }
@@ -1592,7 +1592,7 @@ inline bool compress(std::string &content) {
                           Z_DEFAULT_STRATEGY);
   if (ret != Z_OK) { return false; }
 
-  strm.avail_in = content.size();
+  strm.avail_in = (uInt) content.size();
   strm.next_in =
       const_cast<Bytef *>(reinterpret_cast<const Bytef *>(content.data()));
 
@@ -1600,7 +1600,7 @@ inline bool compress(std::string &content) {
 
   std::array<char, 16384> buff{};
   do {
-    strm.avail_out = buff.size();
+    strm.avail_out = (uInt) buff.size();
     strm.next_out = reinterpret_cast<Bytef *>(buff.data());
     ret = deflate(&strm, Z_FINISH);
     assert(ret != Z_STREAM_ERROR);
@@ -1637,12 +1637,12 @@ public:
   bool decompress(const char *data, size_t data_length, T callback) {
     int ret = Z_OK;
 
-    strm.avail_in = data_length;
+    strm.avail_in = (uInt) data_length;
     strm.next_in = const_cast<Bytef *>(reinterpret_cast<const Bytef *>(data));
 
     std::array<char, 16384> buff{};
     do {
-      strm.avail_out = buff.size();
+      strm.avail_out = (uInt) buff.size();
       strm.next_out = reinterpret_cast<Bytef *>(buff.data());
 
       ret = inflate(&strm, Z_NO_FLUSH);
