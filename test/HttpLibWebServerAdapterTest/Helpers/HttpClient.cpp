@@ -40,15 +40,23 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		}
 		else if (request.getMethod() == "PUT")
 		{
-			throw std::runtime_error("Not implemented");
+			std::string contentType = request.getHeaders().hasHeader("Content-Type") ? request.getHeaders().getHeader("Content-Type") : "text/plain";
+			httpLibResponse = client.Put(request.getURI().c_str(), httpLibHeaders, request.getContent(), contentType.c_str());
 		}
 		else if (request.getMethod() == "PATCH")
 		{
-			throw std::runtime_error("Not implemented");
+			std::string contentType = request.getHeaders().hasHeader("Content-Type") ? request.getHeaders().getHeader("Content-Type") : "text/plain";
+			httpLibResponse = client.Patch(request.getURI().c_str(), httpLibHeaders, request.getContent(), contentType.c_str());
 		}
 		else if (request.getMethod() == "DELETE")
 		{
-			throw std::runtime_error("Not implemented");
+			std::string contentType = request.getHeaders().hasHeader("Content-Type") ? request.getHeaders().getHeader("Content-Type") : "text/plain";
+			httpLibResponse = client.Delete(request.getURI().c_str(), httpLibHeaders, request.getContent(), contentType.c_str());
+		}
+		else if (request.getMethod() == "OPTIONS")
+		{
+			std::string contentType = request.getHeaders().hasHeader("Content-Type") ? request.getHeaders().getHeader("Content-Type") : "text/plain";
+			httpLibResponse = client.Options(request.getURI().c_str(), httpLibHeaders);
 		}
 		else
 		{
