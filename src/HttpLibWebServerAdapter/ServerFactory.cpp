@@ -1,6 +1,6 @@
 #include "ServerFactory.h"
 
-// #include "SecuredServer.h"
+#include "SecuredServer.h"
 #include "Server.h"
 
 #include "WebServerAdapterInterface/Model/Configuration.h"
@@ -17,15 +17,15 @@ namespace systelab { namespace web_server { namespace httplib {
 
 	std::unique_ptr<IServer> ServerFactory::buildServer(const Configuration& configuration) const
 	{
-		// const SecurityConfiguration& securityConfiguration = configuration.getSecurityConfiguration();
-		// if (securityConfiguration.isHTTPSEnabled())
-		// {
-			// return std::make_unique<SecuredServer>(configuration);
-		// }
-		// else
-		// {
+		const SecurityConfiguration& securityConfiguration = configuration.getSecurityConfiguration();
+		if (securityConfiguration.isHTTPSEnabled())
+		{
+			return std::make_unique<SecuredServer>(configuration);
+		}
+		else
+		{
 			return std::make_unique<Server>(configuration);
-		// }
+		}
 	}
 
 }}}
