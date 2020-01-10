@@ -39,8 +39,6 @@ namespace systelab { namespace web_server { namespace httplib {
 		std::unique_ptr<Configuration> m_configuration;
 		std::unique_ptr<WebServicesMgr> m_webServicesMgr;
 		std::unique_ptr<::httplib::Server> m_httpLibServer;
-
-		bool m_running;
 		std::thread m_thread;
 	};
 
