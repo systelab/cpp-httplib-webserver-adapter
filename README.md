@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/systelab/cpp-httplib-webserver-adapter.svg?branch=master)](https://travis-ci.org/systelab/cpp-httplib-webserver-adapter)
-[![Build status](https://ci.appveyor.com/api/projects/status/ea1h2dl6cxgmekv2?svg=true)](https://ci.appveyor.com/project/systelab/cpp-httplib-webserver-adapter)
+[![Build status](https://ci.appveyor.com/api/projects/status/p07a5c1ghnb7j9xq?svg=true)](https://ci.appveyor.com/project/systelab/cpp-httplib-webserver-adapter)
 [![codecov](https://codecov.io/gh/systelab/cpp-httplib-webserver-adapter/branch/master/graph/badge.svg)](https://codecov.io/gh/systelab/cpp-httplib-webserver-adapter)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/934c47b9e7ca484692b1c5b2976808b9)](https://www.codacy.com/app/systelab/cpp-httplib-webserver-adapter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/cpp-httplib-webserver-adapter&amp;utm_campaign=Badge_Grade)
 [![Download](https://api.bintray.com/packages/systelab/conan/HttpLibWebServerAdapter:systelab/images/download.svg)](https://bintray.com/systelab/conan/HttpLibWebServerAdapter:systelab/_latestVersion)
