@@ -66,7 +66,7 @@ namespace systelab { namespace web_server { namespace httplib {
 
 			if (m_thread.joinable())
 			{
-				m_thread.detach();
+				m_thread.join();
 			}
 		}
 	}
