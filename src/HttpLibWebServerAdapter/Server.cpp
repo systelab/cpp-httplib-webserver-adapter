@@ -18,7 +18,6 @@ namespace systelab { namespace web_server { namespace httplib {
 		:m_configuration(new Configuration(configuration))
 		,m_webServicesMgr(new WebServicesMgr())
 		,m_httpLibServer()
-		,m_running(false)
 		,m_thread()
 	{
 	}
@@ -61,10 +60,14 @@ namespace systelab { namespace web_server { namespace httplib {
 
 	void Server::stop()
 	{
-		if (m_running && m_httpLibServer)
+		if (m_httpLibServer && m_httpLibServer->is_running())
 		{
 			m_httpLibServer->stop();
-			m_running = false;
+
+			if (m_thread.joinable())
+			{
+				m_thread.detach();
+			}
 		}
 	}
 
@@ -77,32 +80,32 @@ namespace systelab { namespace web_server { namespace httplib {
 
 	void Server::configureRoutes(::httplib::Server& httpLibServer) const
 	{
-		httpLibServer.Get(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Get(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
 
-		httpLibServer.Post(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Post(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
 
-		httpLibServer.Put(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Put(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
 
-		httpLibServer.Patch(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Patch(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
 
-		httpLibServer.Delete(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Delete(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
 
-		httpLibServer.Options(R"(\*)", [this](const ::httplib::Request& request, ::httplib::Response& response)
+		httpLibServer.Options(".+", [this](const ::httplib::Request& request, ::httplib::Response& response)
 		{
 			this->handleRequest(request, response);
 		});
