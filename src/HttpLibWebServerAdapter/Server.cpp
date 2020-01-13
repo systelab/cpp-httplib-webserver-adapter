@@ -75,6 +75,8 @@ namespace systelab { namespace web_server { namespace httplib {
 	{
 		auto httpLibServer = std::unique_ptr<::httplib::Server>(new ::httplib::Server());
 		configureRoutes(*httpLibServer);
+		httpLibServer->set_gzip_compression_enabled(m_configuration->isGZIPCompressionEnabled());
+
 		return httpLibServer;
 	}
 
