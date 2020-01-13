@@ -502,6 +502,7 @@ public:
   void set_keep_alive_max_count(size_t count);
   void set_read_timeout(time_t sec, time_t usec);
   void set_payload_max_length(size_t length);
+  void set_gzip_compression_enabled(bool enabled);
 
   bool bind_to_port(const char *host, int port, int socket_flags = 0);
   int bind_to_any_port(const char *host, int socket_flags = 0);
@@ -523,6 +524,7 @@ protected:
   time_t read_timeout_sec_;
   time_t read_timeout_usec_;
   size_t payload_max_length_;
+  bool gzip_compression_enabled_;
 
 private:
   using Handlers = std::vector<std::pair<std::regex, Handler>>;
@@ -2778,7 +2780,9 @@ inline Server::Server()
     : keep_alive_max_count_(CPPHTTPLIB_KEEPALIVE_MAX_COUNT),
       read_timeout_sec_(CPPHTTPLIB_READ_TIMEOUT_SECOND),
       read_timeout_usec_(CPPHTTPLIB_READ_TIMEOUT_USECOND),
-      payload_max_length_(CPPHTTPLIB_PAYLOAD_MAX_LENGTH), is_running_(false),
+      payload_max_length_(CPPHTTPLIB_PAYLOAD_MAX_LENGTH),
+      gzip_compression_enabled_(true),
+      is_running_(false),
       svr_sock_(INVALID_SOCKET) {
 #ifndef _WIN32
   signal(SIGPIPE, SIG_IGN);
@@ -2876,6 +2880,10 @@ inline void Server::set_read_timeout(time_t sec, time_t usec) {
 
 inline void Server::set_payload_max_length(size_t length) {
   payload_max_length_ = length;
+}
+
+inline void Server::set_gzip_compression_enabled(bool enabled) {
+	gzip_compression_enabled_ = enabled;
 }
 
 inline bool Server::bind_to_port(const char *host, int port, int socket_flags) {
@@ -3016,6 +3024,7 @@ inline bool Server::write_response(Stream &strm, bool last_connection,
     // TODO: 'Accept-Encoding' has gzip, not gzip;q=0
     const auto &encodings = req.get_header_value("Accept-Encoding");
     if (encodings.find("gzip") != std::string::npos &&
+        gzip_compression_enabled_ &&
         detail::can_compress(res.get_header_value("Content-Type"))) {
       if (detail::compress(res.body)) {
         res.set_header("Content-Encoding", "gzip");
