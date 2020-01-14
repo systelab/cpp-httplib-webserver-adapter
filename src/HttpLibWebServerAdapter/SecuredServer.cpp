@@ -17,8 +17,24 @@ namespace systelab { namespace web_server { namespace httplib {
 
 	std::unique_ptr<::httplib::Server> SecuredServer::buildHttpLibServer() const
 	{
-		auto httpLibServer = std::unique_ptr<::httplib::Server>(new ::httplib::Server());
+		std::unique_ptr<::httplib::SSLServer> httpLibServer;
+
+		const auto& securityConfiguration = m_configuration->getSecurityConfiguration();
+		std::string serverCertificate = securityConfiguration.getServerCertificate();
+		std::string serverPrivateKey = securityConfiguration.getServerPrivateKey();
+		std::string serverDHParam = securityConfiguration.getServerDHParam();
+		if (securityConfiguration.isMutualSSLEnabled())
+		{
+			std::string clientCertificate = securityConfiguration.getClientCertificate();
+			httpLibServer.reset(new ::httplib::SSLServer(serverCertificate, serverPrivateKey, serverDHParam, clientCertificate));
+		}
+		else
+		{
+			httpLibServer.reset(new ::httplib::SSLServer(serverCertificate, serverPrivateKey, serverDHParam, ""));
+		}
+ 
 		configureRoutes(*httpLibServer);
+		httpLibServer->set_gzip_compression_enabled(m_configuration->isGZIPCompressionEnabled());
 
 		return httpLibServer;
 	}

@@ -1,162 +1,40 @@
 #include "stdafx.h"
+#include "BaseServerTest.h"
+#include "ServerTestData.h"
+
 #include "HttpLibWebServerAdapter/Server.h"
-
-#include "Helpers/HttpClient.h"
-
-#include "WebServerAdapterInterface/IWebService.h"
-#include "WebServerAdapterInterface/Model/Configuration.h"
-#include "WebServerAdapterInterface/Model/Request.h"
-#include "WebServerAdapterInterface/Model/Reply.h"
-#include "WebServerAdapterInterface/Model/SecurityConfiguration.h"
-
-#include "WebServerAdapterTestUtilities/Mocks/MockWebService.h"
 
 #include "TestUtilitiesInterface/EntityComparator.h"
 
 
 using namespace testing;
 using namespace systelab::test_utility;
-using namespace systelab::web_server::test_utility;
 
 namespace systelab { namespace web_server { namespace httplib { namespace test {
 
-	namespace {
-		struct ServerTestData
-		{
-			Request request;
-			Reply reply;
-		};
-
-		std::vector<ServerTestData> testData =
-		{
-			{
-				Request("GET", "/rest/api/health", {}, 1, 1, { {"Origin", "http://localhost:4200"} }, ""),
-				Reply(Reply::StatusType::OK, { {"Content-Type", "application/json"} }, "{ \"status\": \"running\" }")
-			},
-			{
-				Request("POST", "/rest/api/users/login", {}, 1, 1,{ { "Content-Length", "25" },{ "Content-Type", "text/plain" } }, "Request content goes here"),
-				Reply(Reply::StatusType::CREATED,{ { "Content-Type", "text/plain" },{ "Authorization", "Bearer 12345679012345689" } }, "Reply goes here")
-			},
-			{
-				Request("PUT", "/custom/url/here", {}, 1, 1,{ {"Authorization", "Bearer xxx.yyy.zzz"} }, ""),
-				Reply(Reply::StatusType::NOT_FOUND,{ { "Content-Type", "application/json" },{ "Authorization", "Bearer 12345679012345689" } }, "{}")
-			},
-			{
-				Request("PATCH", "/rest/api/patch/method", {}, 1, 1,{ {"Content-Type", "application/json"} }, "{ \"aaa\": \"bbb\" }" ),
-				Reply(Reply::StatusType::BAD_REQUEST,{ { "Content-Type", "application/json" },{ "Authorization", "Bearer 12345679012345689" } }, "{ \"ccc\": [1,2,3,4,5,6,7,8,9] }")
-			},
-			{
-				Request("DELETE", "/rest/api/users/john",{}, 1, 1,{ { "CustomHeader", "CustomValue" } }, "Request content goes here"),
-				Reply(Reply::StatusType::NO_CONTENT, {}, "")
-			},
-			{
-				Request("OPTIONS", "/rest/api/users",{}, 1, 1,{ { "Origin", "http://localhost:4200" } }, ""),
-				Reply(Reply::StatusType::INTERNAL_SERVER_ERROR,{ {"Access-Control-Allow-Origin", "http://localhost:4200"} }, "CORS reply")
-			}
-		};
-	}
-
-	class ServerTest : public TestWithParam<ServerTestData>
+	class ServerTest : public BaseServerTest,
+					   public WithParamInterface<ServerTestData>
 	{
 	public:
 		void SetUp()
 		{
-			setUpServer();
-			setUpWebService();
-			setUpHttpClient();
+			BaseServerTest::SetUp();
 		}
 
 		void TearDown()
 		{
-			m_httpClient.reset();
-			m_server.reset();
+			BaseServerTest::TearDown();
 		}
 
-		void setUpServer()
+		std::unique_ptr<IServer> buildServer(Configuration& configuration) override
 		{
-			m_hostAddress = "127.0.0.1";
-			m_port = 9999;
-
-			Configuration configuration;
-			configuration.setPort(m_port);
-			configuration.setThreadPoolSize(5);
-
-			m_server = std::make_unique<Server>(configuration);
-			m_server->start();
-
-			while (!m_server->isRunning())
-			{
-			}
+			return std::make_unique<Server>(configuration);
 		}
 
-		void setUpWebService()
+		std::unique_ptr<HttpClient> buildClient() override
 		{
-			m_defaultReply.setStatus(Reply::OK);
-			m_defaultReply.setContent("Expected reply goes here");
-			m_defaultReply.addHeader("Content-Type", "text/plain");
-			m_defaultReply.addHeader("Authorization", "Bearer 12345679012345689");
-
-			auto webService = std::make_unique<MockWebService>();
-			ON_CALL(*webService, processProxy(_)).WillByDefault(Invoke(
-				[this](const Request& request) -> Reply*
-				{
-					return new Reply(m_defaultReply);
-				}
-			));
-
-			m_webService = webService.get();
-			m_server->registerWebService(std::move(webService));
+			return std::make_unique<HttpClient>();
 		}
-
-		void setUpHttpClient()
-		{
-			m_httpClient = std::make_unique<HttpClient>();
-		}
-
-		Request addClientHeaders(const Request& request)
-		{
-			Request newRequest = request;
-			newRequest.getHeaders().addHeader("Accept", "*/*");
-			newRequest.getHeaders().addHeader("Connection", "close");
-			newRequest.getHeaders().addHeader("Host", m_hostAddress + ":" + std::to_string(m_port));
-			newRequest.getHeaders().addHeader("REMOTE_ADDR", m_hostAddress);
-			newRequest.getHeaders().addHeader("User-Agent", "cpp-httplib/0.5");
-			newRequest.getHeaders().addHeader("Content-Length", std::to_string(request.getContent().size()));
-
-			if (!newRequest.getHeaders().hasHeader("Content-Type") && 
-				(request.getMethod() != "GET") &&
-				(request.getMethod() != "OPTIONS"))
-			{
-				newRequest.getHeaders().addHeader("Content-Type", "text/plain");
-			}
-
-			return newRequest;
-		}
-
-		Reply addServerHeaders(const Reply& reply)
-		{
-			Reply newReply = reply;
-			newReply.addHeader("Accept-Ranges", "bytes");
-			newReply.addHeader("Connection", "close");
-			newReply.addHeader("Content-Length", std::to_string(reply.getContent().size()));
-			if (!newReply.hasHeader("Content-Type"))
-			{
-				newReply.addHeader("Content-Type", "text/plain");
-			}
-
-			return newReply;
-		}
-
-	protected:
-		std::unique_ptr<Server> m_server;
-		std::unique_ptr<HttpClient> m_httpClient;
-		MockWebService* m_webService;
-
-		std::string m_basePath;
-		Reply m_defaultReply;
-
-		std::string m_hostAddress;
-		unsigned int m_port;
 	};
 
 
@@ -179,6 +57,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		EXPECT_TRUE(EntityComparator()(expectedReply, *reply));
 	}
 
-	INSTANTIATE_TEST_CASE_P(Server, ServerTest, testing::ValuesIn(testData));
+	INSTANTIATE_TEST_CASE_P(Server, ServerTest, testing::ValuesIn(ServerTestDataBuilder::build()));
 
 }}}}

@@ -879,9 +879,10 @@ private:
 
 class SSLServer : public Server {
 public:
-  SSLServer(const char *cert_path, const char *private_key_path,
-            const char *client_ca_cert_file_path = nullptr,
-            const char *client_ca_cert_dir_path = nullptr);
+  SSLServer(const std::string& serverCertificate,
+            const std::string& serverPrivateKey,
+            const std::string& serverDHParam,
+            const std::string& clientCertificate);
 
   virtual ~SSLServer();
 
@@ -4377,9 +4378,11 @@ inline std::string SSLSocketStream::get_remote_addr() const {
 }
 
 // SSL HTTP server implementation
-inline SSLServer::SSLServer(const char *cert_path, const char *private_key_path,
-                            const char *client_ca_cert_file_path,
-                            const char *client_ca_cert_dir_path) {
+inline SSLServer::SSLServer(const std::string& serverCertificate,
+                            const std::string& serverPrivateKey,
+                            const std::string& serverDHParam,
+                            const std::string& clientCertificate)
+{
   ctx_ = SSL_CTX_new(SSLv23_server_method());
 
   if (ctx_) {
@@ -4388,29 +4391,81 @@ inline SSLServer::SSLServer(const char *cert_path, const char *private_key_path,
                             SSL_OP_NO_COMPRESSION |
                             SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
 
-    // auto ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
-    // SSL_CTX_set_tmp_ecdh(ctx_, ecdh);
-    // EC_KEY_free(ecdh);
+    BIO* serverCertificateBioMem = BIO_new(BIO_s_mem());
+    BIO_puts(serverCertificateBioMem, serverCertificate.c_str());
+    X509* serverCertificateX509 = PEM_read_bio_X509(serverCertificateBioMem, NULL, NULL, NULL);
 
-    if (SSL_CTX_use_certificate_chain_file(ctx_, cert_path) != 1 ||
-        SSL_CTX_use_PrivateKey_file(ctx_, private_key_path, SSL_FILETYPE_PEM) !=
-            1) {
+    BIO* serverPrivateKeyBioMem = BIO_new(BIO_s_mem());
+    BIO_puts(serverPrivateKeyBioMem, serverPrivateKey.c_str());
+    EVP_PKEY* serverPrivateKeyEVP = PEM_read_bio_PrivateKey(serverPrivateKeyBioMem, NULL,
+                                                            ctx_->default_passwd_callback,
+                                                            ctx_->default_passwd_callback_userdata);
+
+    if ((serverCertificateX509 == NULL) || (serverPrivateKeyEVP == NULL) ||
+        (SSL_CTX_use_certificate(ctx_, serverCertificateX509) != 1) ||
+        (SSL_CTX_use_PrivateKey(ctx_, serverPrivateKeyEVP) != 1))
+    {
       SSL_CTX_free(ctx_);
       ctx_ = nullptr;
-    } else if (client_ca_cert_file_path || client_ca_cert_dir_path) {
-      // if (client_ca_cert_file_path) {
-      //   auto list = SSL_load_client_CA_file(client_ca_cert_file_path);
-      //   SSL_CTX_set_client_CA_list(ctx_, list);
-      // }
+    }
 
-      SSL_CTX_load_verify_locations(ctx_, client_ca_cert_file_path,
-                                    client_ca_cert_dir_path);
+    BIO_free(serverCertificateBioMem);
+    if (serverCertificateX509) {
+      X509_free(serverCertificateX509);
+    }
 
-      SSL_CTX_set_verify(
-          ctx_,
-          SSL_VERIFY_PEER |
-              SSL_VERIFY_FAIL_IF_NO_PEER_CERT, // SSL_VERIFY_CLIENT_ONCE,
-          nullptr);
+    BIO_free(serverPrivateKeyBioMem);
+    if (serverPrivateKeyEVP) {
+      EVP_PKEY_free(serverPrivateKeyEVP);
+    }
+
+    if (serverDHParam.size() > 0) {
+      BIO* serverDHParamBioMem = BIO_new(BIO_s_mem());
+      BIO_puts(serverDHParamBioMem, serverDHParam.c_str());
+      DH* serverDHParam = ::PEM_read_bio_DHparams(serverDHParamBioMem, 0, 0, 0);
+      BIO_free(serverDHParamBioMem);
+      if (serverDHParam) {
+        if (SSL_CTX_set_tmp_dh(ctx_, serverDHParam) == 1) {
+          SSL_CTX_free(ctx_);
+          ctx_ = nullptr;
+        }
+        DH_free(serverDHParam);
+      }
+    }
+
+    if (clientCertificate.size() > 0) {
+      BIO* clientCertificateBioMem = BIO_new(BIO_s_mem());
+      BIO_puts(clientCertificateBioMem, clientCertificate.c_str());
+      STACK_OF(X509_INFO)* clientCertificateInfo = PEM_X509_INFO_read_bio(clientCertificateBioMem, NULL, NULL, NULL);
+      BIO_free(clientCertificateBioMem);
+
+      unsigned int count = 0;
+      if (clientCertificateInfo)
+      {
+        X509_STORE_add_lookup(ctx_->cert_store, X509_LOOKUP_file());
+        for (int i = 0; i < sk_X509_INFO_num(clientCertificateInfo); i++)
+        {
+          X509_INFO* itmp = sk_X509_INFO_value(clientCertificateInfo, i);
+          if (itmp->x509) {
+            X509_STORE_add_cert(ctx_->cert_store, itmp->x509);
+            count++;
+          }
+
+          if (itmp->crl) {
+            X509_STORE_add_crl(ctx_->cert_store, itmp->crl);
+            count++;
+          }
+        }
+
+        sk_X509_INFO_pop_free(clientCertificateInfo, X509_INFO_free);
+      }
+
+      if (count > 0) {
+        SSL_CTX_set_verify(ctx_, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, nullptr);
+      } else {
+        SSL_CTX_free(ctx_);
+        ctx_ = nullptr;
+      }
     }
   }
 }
