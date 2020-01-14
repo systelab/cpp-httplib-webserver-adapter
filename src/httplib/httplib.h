@@ -4425,7 +4425,7 @@ inline SSLServer::SSLServer(const std::string& serverCertificate,
       DH* serverDHParam = ::PEM_read_bio_DHparams(serverDHParamBioMem, 0, 0, 0);
       BIO_free(serverDHParamBioMem);
       if (serverDHParam) {
-        if (SSL_CTX_set_tmp_dh(ctx_, serverDHParam) == 1) {
+        if (SSL_CTX_set_tmp_dh(ctx_, serverDHParam) != 1) {
           SSL_CTX_free(ctx_);
           ctx_ = nullptr;
         }
