@@ -35,6 +35,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
         self.copy("*.so*", dst=("bin/%s" % self.settings.build_type), src="lib")
 
     def package(self):
+        self.copy("ClientFactory.h", dst="include/HttpLibWebServerAdapter", src="src/HttpLibWebServerAdapter")
         self.copy("ServerFactory.h", dst="include/HttpLibWebServerAdapter", src="src/HttpLibWebServerAdapter")
         self.copy("*HttpLibWebServerAdapter.lib", dst="lib", keep_path=False)
         self.copy("*HttpLibWebServerAdapter.pdb", dst="lib", keep_path=False)
