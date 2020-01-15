@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "BaseServerTest.h"
 
-#include "Helpers/HttpClient.h"
-
 #include "WebServerAdapterInterface/IWebService.h"
 #include "WebServerAdapterInterface/Model/Configuration.h"
 #include "WebServerAdapterInterface/Model/Request.h"
@@ -71,7 +69,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 
 	void BaseServerTest::setUpHttpClient()
 	{
-		m_httpClient = buildClient();
+		m_httpClient = buildClient(m_hostAddress, m_port);
 	}
 
 	Request BaseServerTest::addClientHeaders(const Request& request)

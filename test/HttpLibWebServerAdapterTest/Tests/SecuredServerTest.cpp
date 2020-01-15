@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "BaseServerTest.h"
 #include "ServerTestData.h"
-#include "Helpers/HttpsClient.h"
 
+#include "HttpLibWebServerAdapter/SecuredClient.h"
 #include "HttpLibWebServerAdapter/SecuredServer.h"
 
 #include "TestUtilitiesInterface/EntityComparator.h"
@@ -42,9 +42,9 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			return std::make_unique<SecuredServer>(configuration);
 		}
 
-		std::unique_ptr<HttpClient> buildClient() override
+		std::unique_ptr<IClient> buildClient(const std::string& hostAddress, unsigned int port) override
 		{
-			return std::make_unique<HttpsClient>();
+			return std::make_unique<SecuredClient>(hostAddress, port);
 		}
 
 		std::string getServerCertificate()
@@ -116,13 +116,13 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		Request expectedRequest = addClientHeaders(request);
 		EXPECT_CALL(*m_webService, processProxy(isEqTo(expectedRequest)));
 
-		m_httpClient->send(m_hostAddress, m_port, request);
+		m_httpClient->send(request);
 	}
 
 	TEST_P(SecuredServerTest, testSendRequestReturnsExpectedReply)
 	{
 		m_defaultReply = GetParam().reply;
-		auto reply = m_httpClient->send(m_hostAddress, m_port, GetParam().request);
+		auto reply = m_httpClient->send(GetParam().request);
 
 		Reply expectedReply = addServerHeaders(m_defaultReply);
 		ASSERT_TRUE(reply != NULL);

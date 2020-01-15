@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Helpers/HttpClient.h"
-
+#include "WebServerAdapterInterface/IClient.h"
 #include "WebServerAdapterInterface/IServer.h"
 #include "WebServerAdapterInterface/IWebService.h"
 #include "WebServerAdapterInterface/Model/Configuration.h"
@@ -31,14 +30,14 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		void setUpHttpClient();
 
 		virtual std::unique_ptr<IServer> buildServer(Configuration&) = 0;
-		virtual std::unique_ptr<HttpClient> buildClient() = 0;
+		virtual std::unique_ptr<IClient> buildClient(const std::string& hostAddress, unsigned int port) = 0;
 
 		Request addClientHeaders(const Request&);
 		Reply addServerHeaders(const Reply&);
 
 	protected:
 		std::unique_ptr<IServer> m_server;
-		std::unique_ptr<HttpClient> m_httpClient;
+		std::unique_ptr<IClient> m_httpClient;
 		MockWebService* m_webService;
 
 		std::string m_basePath;
