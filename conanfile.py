@@ -10,24 +10,25 @@ class HttpLibWebServerAdapterConan(ConanFile):
     license = "MIT"
     generators = "cmake_find_package"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"gtest": ["1.7.0", "1.8.1"], "OpenSSL": ["1.0.2n"]}
-    default_options = {"gtest":"1.8.1", "OpenSSL":"1.0.2n"}
+    options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"], "OpenSSL": ["1.0.2n", "1.0.2s"]}
+    default_options = {"gtest":"1.10.0", "OpenSSL":"1.0.2s"}
 
     def configure(self):
         self.options["WebServerAdapterTestUtilities"].gtest = self.options.gtest
         self.options["OpenSSL"].shared = True
-        self.options["boost"].shared = True
 
     def requirements(self):
-        self.requires("WebServerAdapterInterface/1.1.0@systelab/stable")
+        self.requires("WebServerAdapterInterface/1.1.1@systelab/stable")
         self.requires(("OpenSSL/%s@conan/stable") % self.options.OpenSSL)
 
     def build_requirements(self):
-        self.build_requires("WebServerAdapterTestUtilities/1.1.0@systelab/stable")
+        self.build_requires("WebServerAdapterTestUtilities/1.1.1@systelab/stable")
         if self.options.gtest == "1.7.0":
             self.build_requires("gtest/1.7.0@systelab/stable")
-        else:
+        elif self.options.gtest == "1.8.1":
             self.build_requires("gtest/1.8.1@bincrafters/stable")
+        else:
+            self.build_requires("gtest/1.10.0@systelab/stable")
 
     def imports(self):
         self.copy("*.dll", dst=("bin/%s" % self.settings.build_type), src="bin")
