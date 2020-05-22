@@ -4387,7 +4387,7 @@ inline SSLServer::SSLServer(const std::string& serverCertificate,
 
   if (ctx_) {
     SSL_CTX_set_options(ctx_,
-                        SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 |
+                            SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 |
                             SSL_OP_NO_COMPRESSION |
                             SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
 
@@ -4397,9 +4397,15 @@ inline SSLServer::SSLServer(const std::string& serverCertificate,
 
     BIO* serverPrivateKeyBioMem = BIO_new(BIO_s_mem());
     BIO_puts(serverPrivateKeyBioMem, serverPrivateKey.c_str());
+#if (OPENSSL_VERSION_NUMBER >= 0x10101000)
+    EVP_PKEY* serverPrivateKeyEVP = PEM_read_bio_PrivateKey(serverPrivateKeyBioMem, NULL,
+                                                            SSL_CTX_get_default_passwd_cb(ctx_),
+                                                            SSL_CTX_get_default_passwd_cb_userdata(ctx_));
+#else
     EVP_PKEY* serverPrivateKeyEVP = PEM_read_bio_PrivateKey(serverPrivateKeyBioMem, NULL,
                                                             ctx_->default_passwd_callback,
                                                             ctx_->default_passwd_callback_userdata);
+#endif
 
     if ((serverCertificateX509 == NULL) || (serverPrivateKeyEVP == NULL) ||
         (SSL_CTX_use_certificate(ctx_, serverCertificateX509) != 1) ||
@@ -4442,17 +4448,17 @@ inline SSLServer::SSLServer(const std::string& serverCertificate,
       unsigned int count = 0;
       if (clientCertificateInfo)
       {
-        X509_STORE_add_lookup(ctx_->cert_store, X509_LOOKUP_file());
+        X509_STORE_add_lookup(SSL_CTX_get_cert_store(ctx_), X509_LOOKUP_file());
         for (int i = 0; i < sk_X509_INFO_num(clientCertificateInfo); i++)
         {
           X509_INFO* itmp = sk_X509_INFO_value(clientCertificateInfo, i);
           if (itmp->x509) {
-            X509_STORE_add_cert(ctx_->cert_store, itmp->x509);
+            X509_STORE_add_cert(SSL_CTX_get_cert_store(ctx_), itmp->x509);
             count++;
           }
 
           if (itmp->crl) {
-            X509_STORE_add_crl(ctx_->cert_store, itmp->crl);
+            X509_STORE_add_crl(SSL_CTX_get_cert_store(ctx_), itmp->crl);
             count++;
           }
         }
