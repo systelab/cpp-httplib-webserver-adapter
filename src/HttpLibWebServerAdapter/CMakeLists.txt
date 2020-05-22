@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 # Find external dependencides
 find_package(OpenSSL)
 find_package(WebServerAdapterInterface)
+find_package(ZLIB)
 
 # Configure preprocessor definitions
 add_compile_options(-D_SCL_SECURE_NO_WARNINGS)
@@ -17,7 +18,7 @@ set(HTTP_LIB_WEB_SERVER_ADAPTER HttpLibWebServerAdapter)
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_SRC "*.cpp")
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_HDR "*.h")
 add_library(${HTTP_LIB_WEB_SERVER_ADAPTER} STATIC ${HTTP_LIB_WEB_SERVER_ADAPTER_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_HDR})
-target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER} WebServerAdapterInterface::WebServerAdapterInterface OpenSSL::OpenSSL)
+target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER} WebServerAdapterInterface::WebServerAdapterInterface OpenSSL::OpenSSL ZLIB::ZLIB)
 
 #Configure source groups
 foreach(FILE ${HTTP_LIB_WEB_SERVER_ADAPTER_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_HDR}) 

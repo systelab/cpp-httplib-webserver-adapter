@@ -10,16 +10,17 @@ class HttpLibWebServerAdapterConan(ConanFile):
     license = "MIT"
     generators = "cmake_find_package"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"], "OpenSSL": ["1.0.2n", "1.0.2s"]}
-    default_options = {"gtest":"1.10.0", "OpenSSL":"1.0.2s"}
+    options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"], "openssl": ["1.0.2s", "1.1.1g"]}
+    default_options = {"gtest":"1.10.0", "openssl":"1.1.1g"}
 
     def configure(self):
         self.options["WebServerAdapterTestUtilities"].gtest = self.options.gtest
-        self.options["OpenSSL"].shared = True
+        self.options["openssl"].shared = True
 
     def requirements(self):
         self.requires("WebServerAdapterInterface/1.1.3@systelab/stable")
-        self.requires(("OpenSSL/%s@conan/stable") % self.options.OpenSSL)
+        self.requires(("openssl/%s") % self.options.openssl)
+        self.requires("zlib/1.2.11")
 
     def build_requirements(self):
         self.build_requires("WebServerAdapterTestUtilities/1.1.3@systelab/stable")
