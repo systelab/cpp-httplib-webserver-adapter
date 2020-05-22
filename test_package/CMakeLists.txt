@@ -19,6 +19,11 @@ set(HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT HttpLibWebServerAdapterPacka
 add_executable(${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT} HttpLibWebServerAdapterExample.cpp)
 target_link_libraries(${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT} HttpLibWebServerAdapter::HttpLibWebServerAdapter Threads::Threads)
 
+# Ignored missing PDBs link warning on Visual Studio
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	set_target_properties(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} PROPERTIES LINK_FLAGS "/ignore:4099")
+endif()
+
 # Register tests
 enable_testing()
 add_test(NAME HttpLibWebServerAdapterPackageTest COMMAND ${HTTP_LIB_WEBSERVER_ADAPTER_PACKAGE_TEST_PROJECT})
