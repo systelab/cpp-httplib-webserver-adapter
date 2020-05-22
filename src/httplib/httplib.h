@@ -882,7 +882,8 @@ public:
   SSLServer(const std::string& serverCertificate,
             const std::string& serverPrivateKey,
             const std::string& serverDHParam,
-            const std::string& clientCertificate);
+            const std::string& clientCertificate,
+            unsigned int tlsSupportMask);
 
   virtual ~SSLServer();
 
@@ -4381,14 +4382,15 @@ inline std::string SSLSocketStream::get_remote_addr() const {
 inline SSLServer::SSLServer(const std::string& serverCertificate,
                             const std::string& serverPrivateKey,
                             const std::string& serverDHParam,
-                            const std::string& clientCertificate)
+                            const std::string& clientCertificate,
+                            unsigned int tlsSupportMask)
 {
   ctx_ = SSL_CTX_new(SSLv23_server_method());
 
   if (ctx_) {
     SSL_CTX_set_options(ctx_,
                             SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 |
-                            SSL_OP_NO_COMPRESSION |
+                            SSL_OP_NO_COMPRESSION | tlsSupportMask |
                             SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
 
     BIO* serverCertificateBioMem = BIO_new(BIO_s_mem());
