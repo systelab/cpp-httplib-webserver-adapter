@@ -58,10 +58,17 @@ namespace systelab { namespace web_server { namespace httplib {
 			tlsSupportMask |= SSL_OP_NO_TLSv1_2;
 		}
 
+#if (OPENSSL_VERSION_NUMBER >= 0x10101000)
 		if (!securityConfiguration.isTLSv13Enabled())
 		{
 			tlsSupportMask |= SSL_OP_NO_TLSv1_3;
 		}
+#else
+		if (securityConfiguration.isTLSv13Enabled())
+		{
+			throw std::runtime_error("TLS v1.3 is not supported before OpenSSL 1.1.1");
+		}
+#endif
 
 		return tlsSupportMask;
 	}
