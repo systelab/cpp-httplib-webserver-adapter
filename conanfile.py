@@ -31,6 +31,11 @@ class HttpLibWebServerAdapterConan(ConanFile):
         else:
             self.build_requires("gtest/1.10.0@systelab/stable")
 
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
+
     def imports(self):
         self.copy("*.dll", dst=("bin/%s" % self.settings.build_type), src="bin")
         self.copy("*.dylib*", dst=("bin/%s" % self.settings.build_type), src="lib")
