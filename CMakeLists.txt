@@ -22,3 +22,4 @@ endif()
 # Add subprojects
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/HttpLibWebServerAdapter)
 add_subdirectory(${CMAKE_SOURCE_DIR}/test/HttpLibWebServerAdapterTest)
+add_subdirectory(${CMAKE_SOURCE_DIR}/test/HttpLibSampleWebServer)
