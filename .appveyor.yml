@@ -63,21 +63,7 @@ artifacts:
   - path: 'build\lib\%CONFIGURATION%\HttpLibWebServerAdapter.lib'
     name: HttpLibWebServerAdapter.lib
 
-deploy:
-  - provider: GitHub
-    auth_token:
-      secure: $(GITHUB_RELEASE_AUTH_TOKEN)
-    artifact: HttpLibWebServerAdapter.lib
-    draft: false
-    prerelease: false
-    description: "Windows library"
-    tag: $(APPVEYOR_REPO_TAG_NAME)
-    on:
-      configuration: Release
-      APPVEYOR_REPO_TAG: true
-      branch: master
-
-after_deploy:
+deploy_script:
   - ps: >- 
       if($env:appveyor_repo_tag -eq 'True') {
         conan upload HttpLibWebServerAdapter/$env:appveyor_build_version@systelab/stable --all -r systelab-bintray --force
