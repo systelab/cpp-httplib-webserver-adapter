@@ -5,7 +5,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Find external dependencides
 find_package(WebServerAdapterTestUtilities)
-find_package(gtest)
+
+set(GTEST_PACKAGE_NAME gtest)
+find_package(${GTEST_PACKAGE_NAME})
+if (NOT TARGET ${GTEST_PACKAGE_NAME}::${GTEST_PACKAGE_NAME})
+    set(GTEST_PACKAGE_NAME GTest)
+    find_package(${GTEST_PACKAGE_NAME})
+endif()
 
 # Configure preprocessor definitions
 add_compile_options(-D_SCL_SECURE_NO_WARNINGS)
@@ -17,7 +23,10 @@ set(HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT HttpLibWebServerAdapterTest)
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_SRC "*.cpp")
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_HDR "*.h")
 add_executable(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT_HDR})
-target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} HttpLibWebServerAdapter WebServerAdapterTestUtilities::WebServerAdapterTestUtilities gtest::gtest)
+target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT}
+					  HttpLibWebServerAdapter
+					  WebServerAdapterTestUtilities::WebServerAdapterTestUtilities
+					  ${GTEST_PACKAGE_NAME}::${GTEST_PACKAGE_NAME})
 
 # Ignored missing PDBs link warning on Visual Studio
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
