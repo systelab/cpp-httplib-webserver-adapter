@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "ServerTestData.h"
 
+#include "WebServerAdapterTestUtilities/Builders/RequestBuilder.h"
+#include "WebServerAdapterTestUtilities/Builders/ReplyBuilder.h"
+
+
+using namespace systelab::web_server::test_utility;
 
 namespace systelab { namespace web_server { namespace httplib { namespace test {
 
@@ -8,28 +13,73 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 	{
 		return {
 			{
-				Request("GET", "/rest/api/health", {}, 1, 1, { {"Origin", "http://localhost:4200"} }, ""),
-				Reply(Reply::StatusType::OK, { {"Content-Type", "application/json"} }, "{ \"status\": \"running\" }")
+				RequestBuilder()
+					.setMethod("GET").setURI("/rest/api/health").setURIFull("/rest/api/health")
+					.addHeader("Origin", "http://localhost:4200")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::OK)
+					.addHeader("Content-Type", "application/json")
+					.setContent("{ \"status\": \"running\" }")
+					.getEntity()
 			},
 			{
-				Request("POST", "/rest/api/users/login", {}, 1, 1,{ { "Content-Length", "25" },{ "Content-Type", "text/plain" } }, "Request content goes here"),
-				Reply(Reply::StatusType::CREATED,{ { "Content-Type", "text/plain" },{ "Authorization", "Bearer 12345679012345689" } }, "Reply goes here")
+				RequestBuilder()
+					.setMethod("POST").setURI("/rest/api/users/login").setURIFull("/rest/api/users/login")
+					.addHeader("Content-Length", "25").addHeader("Content-Type", "text/plain")
+					.setContent("Request content goes here")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::CREATED)
+					.addHeader("Content-Type", "text/plain").addHeader("Authorization", "Bearer 12345679012345689")
+					.setContent("Reply goes here")
+					.getEntity()
 			},
 			{
-				Request("PUT", "/custom/url/here", {}, 1, 1,{ {"Authorization", "Bearer xxx.yyy.zzz"} }, ""),
-				Reply(Reply::StatusType::NOT_FOUND,{ { "Content-Type", "application/json" },{ "Authorization", "Bearer 12345679012345689" } }, "{}")
+				RequestBuilder()
+					.setMethod("PUT").setURI("/custom/url/here").setURIFull("/custom/url/here")
+					.addHeader("Authorization", "Bearer xxx.yyy.zzz")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::NOT_FOUND)
+					.addHeader("Content-Type", "application/json").addHeader("Authorization", "Bearer 12345679012345689")
+					.setContent("{}")
+					.getEntity()
 			},
 			{
-				Request("PATCH", "/rest/api/patch/method", {}, 1, 1,{ {"Content-Type", "application/json"} }, "{ \"aaa\": \"bbb\" }"),
-				Reply(Reply::StatusType::BAD_REQUEST,{ { "Content-Type", "application/json" },{ "Authorization", "Bearer 12345679012345689" } }, "{ \"ccc\": [1,2,3,4,5,6,7,8,9] }")
+				RequestBuilder()
+					.setMethod("PATCH").setURI("/rest/api/patch/method").setURIFull("/rest/api/patch/method")
+					.addHeader("Content-Type", "application/json")
+					.setContent("{ \"aaa\": \"bbb\" }")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::BAD_REQUEST)
+					.addHeader("Content-Type", "application/json").addHeader("Authorization", "Bearer 12345679012345689")
+					.setContent("{ \"ccc\": [1,2,3,4,5,6,7,8,9] }")
+					.getEntity()
 			},
 			{
-				Request("DELETE", "/rest/api/users/john",{}, 1, 1,{ { "CustomHeader", "CustomValue" } }, "Request content goes here"),
-				Reply(Reply::StatusType::NO_CONTENT, {}, "")
+				RequestBuilder()
+					.setMethod("DELETE")
+					.setURI("/rest/api/users/john").setURIFull("/rest/api/users/john")
+					.addHeader("CustomHeader", "CustomValue")
+					.setContent("Request content goes here")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::NO_CONTENT)
+					.getEntity()
 			},
 			{
-				Request("OPTIONS", "/rest/api/users",{}, 1, 1,{ { "Origin", "http://localhost:4200" } }, ""),
-				Reply(Reply::StatusType::INTERNAL_SERVER_ERROR,{ {"Access-Control-Allow-Origin", "http://localhost:4200"} }, "CORS reply")
+				RequestBuilder()
+					.setMethod("OPTIONS")
+					.setURI("/rest/api/users").setURIFull("/rest/api/users")
+					.addHeader("Origin", "http://localhost:4200")
+					.getEntity(),
+				ReplyBuilder()
+					.setStatus(Reply::StatusType::INTERNAL_SERVER_ERROR)
+					.addHeader("Access-Control-Allow-Origin", "http://localhost:4200")
+					.setContent("CORS reply")
+					.getEntity()
 			}
 		};
 	}
