@@ -1,5 +1,7 @@
 #include "HttpLibRequestParserService.h"
 
+#include "RequestURIParserService.h"
+
 #include "WebServerAdapterInterface/Model/Request.h"
 
 #include <httplib/httplib.h>
@@ -16,13 +18,17 @@ namespace systelab { namespace web_server { namespace httplib {
 		request->setHttpVersionMajor(1); // httpLibRequest.version
 		request->setHttpVersionMinor(1);
 		request->setMethod(httpLibRequest.method);
-		request->setURI(httpLibRequest.path);
+		request->setURI(httpLibRequest.target);
+		request->setURIFull(httpLibRequest.target);
 		request->setContent(httpLibRequest.body);
 
 		for (const auto& header : httpLibRequest.headers)
 		{
 			request->getHeaders().addHeader(header.first, header.second);
 		}
+
+		RequestURIParserService uriParserService;
+		uriParserService.parse(*request);
 
 		return request;
 	}
