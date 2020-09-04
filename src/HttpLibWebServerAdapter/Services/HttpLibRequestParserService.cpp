@@ -19,7 +19,6 @@ namespace systelab { namespace web_server { namespace httplib {
 		request->setHttpVersionMinor(1);
 		request->setMethod(httpLibRequest.method);
 		request->setURI(httpLibRequest.target);
-		request->setURIFull(httpLibRequest.target);
 		request->setContent(httpLibRequest.body);
 
 		for (const auto& header : httpLibRequest.headers)
