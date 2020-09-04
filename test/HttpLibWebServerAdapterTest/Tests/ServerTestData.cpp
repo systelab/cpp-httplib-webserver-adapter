@@ -14,7 +14,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		return {
 			{
 				RequestBuilder()
-					.setMethod("GET").setURI("/rest/api/health").setURIFull("/rest/api/health")
+					.setMethod("GET").setURI("/rest/api/health")
 					.addHeader("Origin", "http://localhost:4200")
 					.getEntity(),
 				ReplyBuilder()
@@ -25,7 +25,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			},
 			{
 				RequestBuilder()
-					.setMethod("POST").setURI("/rest/api/users/login").setURIFull("/rest/api/users/login")
+					.setMethod("POST").setURI("/rest/api/users/login")
 					.addHeader("Content-Length", "25").addHeader("Content-Type", "text/plain")
 					.setContent("Request content goes here")
 					.getEntity(),
@@ -37,7 +37,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			},
 			{
 				RequestBuilder()
-					.setMethod("PUT").setURI("/custom/url/here").setURIFull("/custom/url/here")
+					.setMethod("PUT").setURI("/custom/url/here")
 					.addHeader("Authorization", "Bearer xxx.yyy.zzz")
 					.getEntity(),
 				ReplyBuilder()
@@ -48,7 +48,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			},
 			{
 				RequestBuilder()
-					.setMethod("PATCH").setURI("/rest/api/patch/method").setURIFull("/rest/api/patch/method")
+					.setMethod("PATCH").setURI("/rest/api/patch/method")
 					.addHeader("Content-Type", "application/json")
 					.setContent("{ \"aaa\": \"bbb\" }")
 					.getEntity(),
@@ -61,7 +61,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			{
 				RequestBuilder()
 					.setMethod("DELETE")
-					.setURI("/rest/api/users/john").setURIFull("/rest/api/users/john")
+					.setURI("/rest/api/users/john")
 					.addHeader("CustomHeader", "CustomValue")
 					.setContent("Request content goes here")
 					.getEntity(),
@@ -72,7 +72,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			{
 				RequestBuilder()
 					.setMethod("OPTIONS")
-					.setURI("/rest/api/users").setURIFull("/rest/api/users")
+					.setURI("/rest/api/users")
 					.addHeader("Origin", "http://localhost:4200")
 					.getEntity(),
 				ReplyBuilder()
