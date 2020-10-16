@@ -1,6 +1,5 @@
 # Summary of changes
 
-
 ## Changes for version 1.3.4 (4 Sep 2020)
 
 ### Bug Fixes
