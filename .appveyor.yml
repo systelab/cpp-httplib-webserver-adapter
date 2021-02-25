@@ -43,7 +43,7 @@ before_build:
   - md build
   - cd build
   - conan install .. -s build_type=%CONFIGURATION% -s compiler.toolset=%COMPILER_TOOLSET% -s arch=%ARCH% -o gtest=%GTEST% -o openssl=%OPENSSL% --build=missing
-  - conan upload openssl/%OPENSSL% --all -r systelab-public --force
+  - conan upload openssl/%OPENSSL% --all -r systelab-public --force --confirm
   - cmake .. -G "%VISUAL_STUDIO%" -A %PLATFORM%
 
 build:
