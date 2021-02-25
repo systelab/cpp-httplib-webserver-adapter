@@ -1,5 +1,14 @@
 # Summary of changes
 
+## Changes for version 1.3.5 (25 Feb 2021)
+
+### Bug Fixes
+
+- Updated continuous integration to:
+  - Use GitHub Action to generate library documentation
+  - Upload generated packages to Systelab's public Artifactory
+
+
 ## Changes for version 1.3.4 (4 Sep 2020)
 
 ### Bug Fixes
