@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/systelab/cpp-httplib-webserver-adapter.svg?branch=master)](https://travis-ci.org/systelab/cpp-httplib-webserver-adapter)
 [![Build status](https://ci.appveyor.com/api/projects/status/p07a5c1ghnb7j9xq?svg=true)](https://ci.appveyor.com/project/systelab/cpp-httplib-webserver-adapter)
 [![codecov](https://codecov.io/gh/systelab/cpp-httplib-webserver-adapter/branch/master/graph/badge.svg)](https://codecov.io/gh/systelab/cpp-httplib-webserver-adapter)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/934c47b9e7ca484692b1c5b2976808b9)](https://www.codacy.com/app/systelab/cpp-httplib-webserver-adapter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/cpp-httplib-webserver-adapter&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d5a33058984949c0b3db303be12b5a25)](https://www.codacy.com/gh/systelab/cpp-httplib-webserver-adapter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/cpp-httplib-webserver-adapter&amp;utm_campaign=Badge_Grade)
 
 
 # C++ Web Server Adapter implementation for cpp-httplib
