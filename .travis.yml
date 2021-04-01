@@ -85,7 +85,7 @@ install:
   - if [ $TRAVIS_OS_NAME == osx ]; then brew unlink python@2; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install conan; fi
   - conan user
-  - conan remote add systelab-public https://systelab.jfrog.io/artifactory/api/conan/cpp-conan-production-local
+  - conan remote add systelab-public https://csw.jfrog.io/artifactory/api/conan/cpp-conan-production-local
   - conan --version
 
 script:    
