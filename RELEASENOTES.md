@@ -1,5 +1,12 @@
 # Summary of changes
 
+## Changes for version 1.3.6 (1 Apr 2021)
+
+### Bug Fixes
+
+- Moved deploy of Conan packages to CSW JFrogPlatform
+
+
 ## Changes for version 1.3.5 (25 Feb 2021)
 
 ### Bug Fixes
