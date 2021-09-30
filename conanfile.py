@@ -10,8 +10,8 @@ class HttpLibWebServerAdapterConan(ConanFile):
     license = "MIT"
     generators = "cmake_find_package"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"], "openssl": ["1.0.2s", "1.1.1g"]}
-    default_options = {"gtest":"1.10.0", "openssl":"1.1.1g"}
+    options = {"gtest": ["1.7.0", "1.8.1", "1.10.0"], "openssl": ["1.0.2s", "1.1.1g", "1.1.1k"]}
+    default_options = {"gtest":"1.10.0", "openssl":"1.1.1k"}
 
     def configure(self):
         self.options["WebServerAdapterTestUtilities"].gtest = self.options.gtest
@@ -23,8 +23,10 @@ class HttpLibWebServerAdapterConan(ConanFile):
 
         if self.options.openssl == "1.1.1g":
             self.requires("openssl/1.1.1g#58b78c1738d0cff868861e077e707ca4")
+        elif self.options.openssl == "1.1.1k":
+            self.requires("openssl/1.1.1k#64a45e7ba6f25fd93cec135fe3b3d958")
         else:
-            self.requires(("openssl/%s") % self.options.openssl)
+            self.requires(f"openssl/{self.options.openssl}")
 
     def build_requirements(self):
         self.build_requires("WebServerAdapterTestUtilities/1.1.12@systelab/stable")
@@ -36,7 +38,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
         elif self.options.gtest == "1.10.0":
             self.build_requires("gtest/1.10.0#0c895f60b461f8fee0da53a84d659131")
         else:
-            self.build_requires(("gtest/%s") % self.options.gtest)
+            self.build_requires(f"gtest/{self.options.gtest}")
 
     def build(self):
         cmake = CMake(self)
