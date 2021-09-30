@@ -20,7 +20,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
 
     def requirements(self):
         self.requires("WebServerAdapterInterface/1.1.12@systelab/stable")
-        self.requires("zlib/1.2.11")
+        self.requires("zlib/1.2.11#e69eb26137def0a77953bb0afe1bcb54")
 
         if self.options.openssl == "1.1.1g":
             self.requires("openssl/1.1.1g#58b78c1738d0cff868861e077e707ca4")
