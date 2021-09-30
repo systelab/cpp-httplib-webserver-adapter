@@ -1,5 +1,16 @@
 # Summary of changes
 
+## Changes for version 1.3.7 (30 Sep 2021)
+
+### Bug Fixes
+
+- Moved continuous integration to Jenkins
+- Deploy conan package into remote specific for C++ task force
+- Moved WebServerAdapterInterface dependency to version 1.1.12
+- Added configurations for the Snow project into continuous integration
+- Fixed use of "export_sources" definition in conan recipes
+
+
 ## Changes for version 1.3.6 (1 Apr 2021)
 
 ### Bug Fixes
