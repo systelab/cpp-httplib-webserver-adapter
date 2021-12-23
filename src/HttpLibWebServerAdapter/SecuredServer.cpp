@@ -20,9 +20,9 @@ namespace systelab { namespace web_server { namespace httplib {
 		std::unique_ptr<::httplib::SSLServer> httpLibServer;
 
 		const auto& securityConfiguration = m_configuration->getSecurityConfiguration();
-		std::string serverCertificate = securityConfiguration.getServerCertificate();
-		std::string serverPrivateKey = securityConfiguration.getServerPrivateKey();
-		std::string serverDHParam = securityConfiguration.getServerDHParam();
+		std::string serverCertificate = securityConfiguration.getServerCertificate()();
+		std::string serverPrivateKey = securityConfiguration.getServerPrivateKey()();
+		std::string serverDHParam = securityConfiguration.getServerDHParam()();
 		unsigned int tlsSupportMask = buildTLSSupportMask(securityConfiguration);
 		if (securityConfiguration.isMutualSSLEnabled())
 		{
