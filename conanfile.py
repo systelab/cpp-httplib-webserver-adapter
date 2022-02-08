@@ -19,7 +19,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
         self.options["openssl"].shared = True
 
     def requirements(self):
-        self.requires("WebServerAdapterInterface/2.0.0@systelab/stable")
+        self.requires("WebServerAdapterInterface/2.0.1@systelab/stable")
         self.requires("zlib/1.2.11#e69eb26137def0a77953bb0afe1bcb54")
 
         if self.options.openssl == "1.1.1g":
@@ -30,7 +30,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
             self.requires(f"openssl/{self.options.openssl}")
 
     def build_requirements(self):
-        self.build_requires("WebServerAdapterTestUtilities/2.0.0@systelab/stable")
+        self.build_requires("WebServerAdapterTestUtilities/2.0.1@systelab/stable")
 
         if self.options.gtest == "1.7.0":
             self.build_requires("gtest/1.7.0@systelab/stable")

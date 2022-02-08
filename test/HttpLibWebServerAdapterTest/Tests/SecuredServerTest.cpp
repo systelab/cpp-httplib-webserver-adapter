@@ -36,7 +36,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			securityConfiguration.setHTTPSEnabled(true);
 			securityConfiguration.setServerCertificate(serverCertificate);
 			securityConfiguration.setServerPrivateKey(serverPrivateKey);
-			securityConfiguration.setServerDHParam([]() { return ""; });
+			securityConfiguration.setServerDHParam([]() { return std::string(""); });
 			securityConfiguration.setMutualSSLEnabled(false);
 
 			return std::make_unique<SecuredServer>(configuration);

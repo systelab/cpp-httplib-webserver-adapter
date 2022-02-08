@@ -1,5 +1,12 @@
 # Summary of changes
 
+## Changes for version 2.0.1 (8 Feb 2022)
+
+### Bug Fixes
+
+- Moved to version 2.0.1 of WebServerAdapter:
+  - Fixed security configuration object default's constructor
+
 ## Changes for version 2.0.0 (23 Dec 2021)
 
 ### Breaking changes

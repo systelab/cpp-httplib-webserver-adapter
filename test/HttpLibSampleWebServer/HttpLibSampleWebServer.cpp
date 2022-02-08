@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 		securityConfiguration.setHTTPSEnabled(true);
 		securityConfiguration.setServerCertificate(getServerCertificate());
 		securityConfiguration.setServerPrivateKey(getServerPrivateKey());
-		securityConfiguration.setServerDHParam([]() { return ""; });
+		securityConfiguration.setServerDHParam([]() { return std::string(""); });
 
 		securityConfiguration.setTLSv10Enabled(cmdArgs->enableTLSv10);
 		securityConfiguration.setTLSv11Enabled(cmdArgs->enableTLSv11);
