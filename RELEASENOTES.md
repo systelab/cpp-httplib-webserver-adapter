@@ -1,5 +1,12 @@
 # Summary of changes
 
+## Changes for version 2.0.2 (15 Feb 2022)
+
+### Bug Fixes
+
+- Cleansed certificate strings for dump protection
+
+
 ## Changes for version 2.0.1 (8 Feb 2022)
 
 ### Bug Fixes

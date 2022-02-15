@@ -33,6 +33,10 @@ namespace systelab { namespace web_server { namespace httplib {
 		{
 			httpLibServer.reset(new ::httplib::SSLServer(serverCertificate, serverPrivateKey, serverDHParam, "", tlsSupportMask));
 		}
+
+		std::memset(&serverCertificate[0], '0', strlen(&serverCertificate[0]));
+		std::memset(&serverPrivateKey[0], '0', strlen(&serverPrivateKey[0]));
+		std::memset(&serverDHParam[0], '0', strlen(&serverDHParam[0]));
  
 		configureRoutes(*httpLibServer);
 		httpLibServer->set_gzip_compression_enabled(m_configuration->isGZIPCompressionEnabled());
