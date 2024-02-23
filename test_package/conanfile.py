@@ -5,7 +5,7 @@ class HttpLibWebServerAdapterTestConan(ConanFile):
     generators = "cmake_find_package"
 
     def configure(self):
-        self.options["HttpLibWebServerAdapter"].openssl = self.options.openssl
+        self.options["openssl"].shared = True
 
     def build(self):
         cmake = CMake(self)
