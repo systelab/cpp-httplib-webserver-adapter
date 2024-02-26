@@ -161,6 +161,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		ASSERT_TRUE(compareReplyHeaders(GetParam().expectedReplyHeaders, actualReplyHeaders));
 	}
 
-	INSTANTIATE_TEST_CASE_P(WebServer, ReplyCORSHeadersBuilderServiceTest, testing::ValuesIn(replyCORSHeadersBuilderServiceTestData));
+	INSTANTIATE_TEST_SUITE_P(WebServer, ReplyCORSHeadersBuilderServiceTest, testing::ValuesIn(replyCORSHeadersBuilderServiceTestData));
 
 }}}}

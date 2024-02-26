@@ -134,6 +134,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		EXPECT_TRUE(EntityComparator()(expectedReply, *reply));
 	}
 
-	INSTANTIATE_TEST_CASE_P(SecuredServer, SecuredServerTest, testing::ValuesIn(ServerTestDataBuilder::build()));
+	INSTANTIATE_TEST_SUITE_P(SecuredServer, SecuredServerTest, testing::ValuesIn(ServerTestDataBuilder::build()));
 
 }}}}

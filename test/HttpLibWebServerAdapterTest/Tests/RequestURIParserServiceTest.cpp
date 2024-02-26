@@ -93,6 +93,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		}
 	}
 
-	INSTANTIATE_TEST_CASE_P(WebServer, RequestURIParserServiceTest, testing::ValuesIn(requestURIParserServiceTestData));
+	INSTANTIATE_TEST_SUITE_P(WebServer, RequestURIParserServiceTest, testing::ValuesIn(requestURIParserServiceTestData));
 
 }}}}
