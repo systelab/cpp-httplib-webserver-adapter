@@ -66,14 +66,14 @@ namespace systelab { namespace web_server { namespace httplib {
 
 	void Server::stop()
 	{
-		if (m_httpLibServer && m_httpLibServer->is_running())
+		if (isRunning())
 		{
 			m_httpLibServer->stop();
-
-			if (m_thread.joinable())
-			{
-				m_thread.join();
-			}
+		}
+		
+		if (m_thread.joinable())
+		{
+			m_thread.join();
 		}
 	}
 
