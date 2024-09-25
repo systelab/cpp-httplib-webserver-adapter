@@ -13,8 +13,7 @@ using namespace systelab::test_utility;
 
 namespace systelab { namespace web_server { namespace httplib { namespace test {
 
-	class ServerTest : public BaseServerTest,
-					   public WithParamInterface<ServerTestData>
+	class ServerTest : public BaseServerTest
 	{
 	public:
 		void SetUp()
@@ -38,8 +37,21 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		}
 	};
 
+	TEST_F(ServerTest, testSetupSecondServerThrowsException)
+	{
+		Configuration configuration;
+		configuration.setPort(m_port);
+		configuration.setThreadPoolSize(5);
 
-	TEST_P(ServerTest, testSendRequestCallsWebService)
+		auto secondServer = buildServer(configuration);
+		EXPECT_THROW(secondServer->start(), std::runtime_error);
+	}
+
+	class ParametricServerTest : public ServerTest,
+								 public WithParamInterface<ServerTestData>
+	{};
+
+	TEST_P(ParametricServerTest, testSendRequestCallsWebService)
 	{
 		Request request = GetParam().request;
 		Request expectedRequest = addClientHeaders(request);
@@ -48,7 +60,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		m_httpClient->send(request);
 	}
 
-	TEST_P(ServerTest, testSendRequestReturnsExpectedReply)
+	TEST_P(ParametricServerTest, testSendRequestReturnsExpectedReply)
 	{
 		m_defaultReply = GetParam().reply;
 		auto reply = m_httpClient->send(GetParam().request);
@@ -58,6 +70,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		EXPECT_TRUE(EntityComparator()(expectedReply, *reply));
 	}
 
-	INSTANTIATE_TEST_CASE_P(Server, ServerTest, testing::ValuesIn(ServerTestDataBuilder::build()));
+	INSTANTIATE_TEST_CASE_P(Server, ParametricServerTest, ValuesIn(ServerTestDataBuilder::build()));
 
 }}}}
