@@ -54,12 +54,23 @@ namespace systelab { namespace web_server { namespace httplib {
 			m_httpLibServer = buildHttpLibServer();
 		}
 
-		std::thread t(std::bind(&Server::runThread, this));
+		std::atomic_bool done(false);
+		std::thread t([&]()
+		{
+			this->runThread();
+			done = true;
+		});
+
 		m_thread.swap(t);
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		if (!m_httpLibServer->is_running())
+		while (!isRunning() && !done)
 		{
+			std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+		}
+
+		if (done)
+		{
+			m_thread.join();
 			throw std::runtime_error("Server can't start");
 		}
 	}
@@ -69,12 +80,12 @@ namespace systelab { namespace web_server { namespace httplib {
 		if (isRunning())
 		{
 			m_httpLibServer->stop();
+			if (m_thread.joinable())
+			{
+				m_thread.join();
+			}
 		}
 		
-		if (m_thread.joinable())
-		{
-			m_thread.join();
-		}
 	}
 
 	std::unique_ptr<::httplib::Server> Server::buildHttpLibServer() const
@@ -142,6 +153,7 @@ namespace systelab { namespace web_server { namespace httplib {
 		HttpLibResponseBuilderService responseBuilderService;
 		responseBuilderService.build(*reply, httpLibResponse);
 	}
+
 
 	void Server::runThread()
 	{
