@@ -56,6 +56,12 @@ namespace systelab { namespace web_server { namespace httplib {
 
 		std::thread t(std::bind(&Server::runThread, this));
 		m_thread.swap(t);
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		if (!m_httpLibServer->is_running())
+		{
+			throw std::runtime_error("Server can't start");
+		}
 	}
 
 	void Server::stop()
