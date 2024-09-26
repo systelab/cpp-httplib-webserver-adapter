@@ -21,11 +21,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 			BaseServerTest::SetUp();
 		}
 
-		void TearDown()
-		{
-			BaseServerTest::TearDown();
-		}
-
 		std::unique_ptr<IServer> buildServer(Configuration& configuration) override
 		{
 			return std::make_unique<Server>(configuration);

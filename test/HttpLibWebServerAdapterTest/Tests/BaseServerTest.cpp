@@ -25,12 +25,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 		setUpHttpClient();
 	}
 
-	void BaseServerTest::TearDown()
-	{
-		m_httpClient.reset();
-		m_server.reset();
-	}
-
 	void BaseServerTest::setUpServer()
 	{
 		m_hostAddress = "127.0.0.1";
