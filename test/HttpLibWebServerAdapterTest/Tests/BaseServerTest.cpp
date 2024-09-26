@@ -42,10 +42,6 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 
 		m_server = buildServer(configuration);
 		m_server->start();
-
-		while (!m_server->isRunning())
-		{
-		}
 	}
 
 	void BaseServerTest::setUpWebService()
