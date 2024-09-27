@@ -23,6 +23,7 @@ namespace systelab { namespace web_server { namespace httplib { namespace test {
 	{
 	public:
 		void SetUp();
+		void TearDown();
 
 		void setUpServer();
 		void setUpWebService();
