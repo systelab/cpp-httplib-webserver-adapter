@@ -19,6 +19,7 @@ namespace systelab { namespace web_server { namespace httplib {
 		,m_webServicesMgr(new WebServicesMgr())
 		,m_httpLibServer()
 		,m_thread()
+		,m_threadDone(false)
 	{
 	}
 
@@ -54,21 +55,34 @@ namespace systelab { namespace web_server { namespace httplib {
 			m_httpLibServer = buildHttpLibServer();
 		}
 
+		m_threadDone = false;
 		std::thread t(std::bind(&Server::runThread, this));
+
 		m_thread.swap(t);
+
+		while (!isRunning() && !m_threadDone)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+		}
+
+		if (m_threadDone)
+		{
+			m_thread.join();
+			throw std::runtime_error("Server can't start");
+		}
 	}
 
 	void Server::stop()
 	{
-		if (m_httpLibServer && m_httpLibServer->is_running())
+		if (isRunning())
 		{
 			m_httpLibServer->stop();
-
 			if (m_thread.joinable())
 			{
 				m_thread.join();
 			}
 		}
+		
 	}
 
 	std::unique_ptr<::httplib::Server> Server::buildHttpLibServer() const
@@ -137,11 +151,13 @@ namespace systelab { namespace web_server { namespace httplib {
 		responseBuilderService.build(*reply, httpLibResponse);
 	}
 
+
 	void Server::runThread()
 	{
 		std::string hostAddress = m_configuration->getHostAddress();
 		unsigned int port = m_configuration->getPort();
 		m_httpLibServer->listen(hostAddress.c_str(), port);
+		m_threadDone = true;
 	}
 
 }}}
