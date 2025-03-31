@@ -40,6 +40,7 @@ namespace systelab { namespace web_server { namespace httplib {
 		std::unique_ptr<WebServicesMgr> m_webServicesMgr;
 		std::unique_ptr<::httplib::Server> m_httpLibServer;
 		std::thread m_thread;
+		std::atomic_bool m_threadDone;
 	};
 
 }}}
