@@ -7,7 +7,7 @@ from conan.tools.files import collect_libs, copy
 required_conan_version = ">=2.0.0"
 
 class HttpLibWebServerAdapterConan(ConanFile):
-    name = "httplib-web-server-adapter"
+    name = "httplib-webserver-adapter"
     description = "Implementation of C++ Web Server based on cpp-httplib"
     url = "https://github.com/systelab/cpp-httplib-webserver-adapter"
     homepage = "https://github.com/systelab/cpp-httplib-webserver-adapter"

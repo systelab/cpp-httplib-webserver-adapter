@@ -4,7 +4,9 @@ def archs = ['x86', 'x86_64']
 def configs = ['Debug', 'Release']
 
 
-@Library('aid-pipeline-utils@1.0.23') _
+library identifier: "cpp-jenkins-pipelines@master", retriever: modernSCM(
+  [$class: "GitSCMSource",
+   remote: "https://github.com/systelab/cpp-jenkins-pipelines.git"])
    
 pipeline
 {
@@ -73,7 +75,8 @@ pipeline
 								def buildFolder = "build/${config}-${arch}"
 								bat "conan install . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 								bat "conan build . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
-								bat "conan export-pkg . --name=httplib-web-server-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan export-pkg . --name=httplib-webserver-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan test ./test_package/conanfile.py httplib-webserver-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 
 								dir("${buildFolder}/bin/${config}/")
 								{
@@ -86,23 +89,6 @@ pipeline
 				}
 			}
 		}
-		stage('Test Packages')
-		{
-			steps
-			{
-				script
-				{
-					archs.each
-					{ arch ->
-						configs.each
-						{ config ->
-							bat "conan test ./test_package/conanfile.py httplib-web-server-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
-						}
-					}
-				}
-			}
-		}
-
 		stage('Deploy')
 		{
 			when
@@ -111,7 +97,7 @@ pipeline
 			}
 			steps
 			{
-				bat "conan upload httplib-web-server-adapter/${version} --remote aid-conan-production-local --confirm --force"
+				bat "conan upload httplib-webserver-adapter/${version} --remote aid-conan-production-local --confirm --force"
 			}
 		}
 	}
