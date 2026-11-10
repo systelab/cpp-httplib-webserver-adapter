@@ -73,7 +73,7 @@ pipeline
 								def buildFolder = "build/${config}-${arch}"
 								bat "conan install . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 								bat "conan build . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
-								bat "conan export-pkg . --name=http-lib-web-server-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan export-pkg . --name=httplib-web-server-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 
 								dir("${buildFolder}/bin/${config}/")
 								{
@@ -96,7 +96,7 @@ pipeline
 					{ arch ->
 						configs.each
 						{ config ->
-							bat "conan test ./test_package/conanfile.py http-lib-web-server-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+							bat "conan test ./test_package/conanfile.py httplib-web-server-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 						}
 					}
 				}
@@ -111,7 +111,7 @@ pipeline
 			}
 			steps
 			{
-				bat "conan upload http-lib-web-server-adapter/${version} --remote aid-conan-production-local --confirm --force"
+				bat "conan upload httplib-web-server-adapter/${version} --remote aid-conan-production-local --confirm --force"
 			}
 		}
 	}
