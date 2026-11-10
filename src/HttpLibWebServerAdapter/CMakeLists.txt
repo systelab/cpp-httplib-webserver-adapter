@@ -18,7 +18,7 @@ set(HTTP_LIB_WEB_SERVER_ADAPTER HttpLibWebServerAdapter)
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_SRC "*.cpp")
 file(GLOB_RECURSE HTTP_LIB_WEB_SERVER_ADAPTER_HDR "*.h")
 add_library(${HTTP_LIB_WEB_SERVER_ADAPTER} STATIC ${HTTP_LIB_WEB_SERVER_ADAPTER_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_HDR})
-target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER} WebServerAdapterInterface::WebServerAdapterInterface OpenSSL::OpenSSL ZLIB::ZLIB)
+target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER} WebServerAdapterInterface::WebServerAdapterInterface openssl::openssl ZLIB::ZLIB)
 
 #Configure source groups
 foreach(FILE ${HTTP_LIB_WEB_SERVER_ADAPTER_SRC} ${HTTP_LIB_WEB_SERVER_ADAPTER_HDR}) 
