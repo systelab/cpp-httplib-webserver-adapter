@@ -17,7 +17,7 @@ This library is designed to be installed by making use of [Conan](https://conan.
 
 ```python
 def requirements(self):
-   self.requires("HttpLibWebServerAdapter/1.0.0@systelab/stable")
+    self.requires("httplib-webserver-adapter/1.0.0")
 ```
 
 > Version number of this code snipped is set just as an example. Replace it for the desired package version to retrieve.
@@ -28,7 +28,7 @@ As this package is not available on the conan-center, you will also need to conf
 conan remote add systelab-public https://csw.jfrog.io/artifactory/api/conan/cpp-conan-production-local 
 ```
 
-See Conan [documentation](https://docs.conan.io/en/latest/) for further details on how to integrate this package with your build system.
+See Conan [documentation](https://docs.conan.io/2/) for further details on how to integrate this package with your build system.
 
 ### Build from sources
 

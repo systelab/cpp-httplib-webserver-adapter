@@ -5,6 +5,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Find external dependencides
 find_package(WebServerAdapterTestUtilities)
+find_package(test-utilities-interface)
 
 set(GTEST_PACKAGE_NAME gtest)
 find_package(${GTEST_PACKAGE_NAME})
@@ -26,6 +27,7 @@ add_executable(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT} ${HTTP_LIB_WEB_SERVER
 target_link_libraries(${HTTP_LIB_WEB_SERVER_ADAPTER_TEST_PROJECT}
 					  HttpLibWebServerAdapter
 					  WebServerAdapterTestUtilities::WebServerAdapterTestUtilities
+                      test-utilities-interface::test-utilities-interface
 					  ${GTEST_PACKAGE_NAME}::${GTEST_PACKAGE_NAME})
 
 # Ignored missing PDBs link warning on Visual Studio

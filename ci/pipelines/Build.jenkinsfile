@@ -1,4 +1,3 @@
-def channel = "testing"
 def version = "0.0.0"
 def profile = "vs2022.conanprofile"
 def archs = ['x86', 'x86_64']
@@ -16,18 +15,19 @@ pipeline
 		label 'lib-build'
 	}
 
+	environment
+	{
+		PATH = "${env.USERPROFILE}\\.venvs\\conan2\\Scripts;${env.PATH}"
+	}
+
 	parameters
 	{
 		string(	name: 'version',
 				description: 'Version to build (must match the name of the tag that will be checked out), leave blank for checkout of current branch',
 				defaultValue: '' )
 
-		booleanParam( name: 'stable',
-					  description: 'Show if generated library should be uploaded as stable or testing',
-					  defaultValue: false )
-		
 		booleanParam( name: 'uploadPackage',
-					  description: 'Whether or not to upload testing conan package',
+					  description: 'Whether or not to upload conan package',
 					  defaultValue: false )
 	}
 
@@ -56,7 +56,6 @@ pipeline
 						checkoutSourceCodeFromTag(version)
 						version = params.version
 					}
-					channel = params.stable ? "stable" : "testing"
 				}
 			}
 		}
@@ -74,9 +73,10 @@ pipeline
 							stage("Build ${config}|${arch}")
 							{
 								def buildFolder = "build/${config}-${arch}"
-								bat "conan install . --install-folder ${buildFolder} --profile=${profile} -s arch=${arch} -s build_type=${config}"
-								bat "conan build . --build-folder ${buildFolder}" 
-								bat "conan export-pkg . HttpLibWebServerAdapter/${version}@systelab/${channel} --build-folder ${buildFolder} --force"
+								bat "conan install . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan build . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan export-pkg . --name=httplib-webserver-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+								bat "conan test ./test_package/conanfile.py httplib-webserver-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 
 								dir("${buildFolder}/bin/${config}/")
 								{
@@ -89,24 +89,6 @@ pipeline
 				}
 			}
 		}
-		stage('Test Packages')
-		{
-			steps
-			{
-				script
-				{
-					archs.each
-					{ arch ->
-						configs.each
-						{ config ->
-							def buildFolder = "build/${config}-${arch}"
-							bat "conan test ./test_package/conanfile.py HttpLibWebServerAdapter/${version}@systelab/${channel} --profile=${profile} -s arch=${arch} -s build_type=${config}"
-						}
-					}
-				}
-			}
-		}
-
 		stage('Deploy')
 		{
 			when
@@ -115,7 +97,7 @@ pipeline
 			}
 			steps
 			{
-				bat "conan upload HttpLibWebServerAdapter/${version}@systelab/${channel} --all -r systelab-conan-local --force"
+				bat "conan upload httplib-webserver-adapter/${version} --remote aid-conan-production-local --confirm --force"
 			}
 		}
 	}
@@ -127,7 +109,7 @@ pipeline
 			junit allowEmptyResults: true, testResults: "build/**/HttpLibWebServerAdapterTest.xml"
 			script
 			{
-				currentBuild.description = "${version}/${channel}"
+				currentBuild.description = "${version}"
 			}
 		}
 	}
