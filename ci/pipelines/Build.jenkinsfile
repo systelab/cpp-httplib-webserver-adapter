@@ -76,7 +76,6 @@ pipeline
 								bat "conan install . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 								bat "conan build . --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 								bat "conan export-pkg . --name=httplib-webserver-adapter --version=${version} --output-folder ${buildFolder} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
-								bat "conan test ./test_package/conanfile.py httplib-webserver-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
 
 								dir("${buildFolder}/bin/${config}/")
 								{
@@ -89,6 +88,27 @@ pipeline
 				}
 			}
 		}
+
+		stage('Test package')
+		{
+			steps
+			{
+				script
+				{
+					archs.each
+					{ arch ->
+						configs.each
+						{ config ->
+							stage("Test package ${config}|${arch}")
+							{
+								bat "conan test ./test_package/conanfile.py httplib-webserver-adapter/${version} --profile:all=${profile} -s:a arch=${arch} -s:a build_type=${config}"
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		stage('Deploy')
 		{
 			when

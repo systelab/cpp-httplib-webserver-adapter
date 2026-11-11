@@ -16,7 +16,7 @@ class HttpLibWebServerAdapterConan(ConanFile):
     license = "MIT"
     package_type = "static-library"
     settings = "os", "compiler", "build_type", "arch"
-    exports_sources = "*", "!build*", "!*.yml", "!*.xml", "!*.md", "!*.in", "!ci", "!.gitattributes", "!.gitignore"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "test/*"
 
     def configure(self):
         self.options["openssl/*"].shared = True
